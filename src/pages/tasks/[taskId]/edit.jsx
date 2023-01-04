@@ -20,16 +20,17 @@ const TaskEditPage = (props) => {
   } = props
 
   const router = useRouter()
-
   const { updateTodo, todoList } = useContext()
   const { idList } = router.query
 
-  const id = Number.parseInt(idList, 10) - 1
+  const task = todoList
+    .flatMap((obj) => obj.task)
+    .filter((items) => items.id === taskId)[0]
 
   const handleSubmit = useCallback(
     (values) => {
       updateTodo(values)
-      router.push(`/lists/list?idList=${idList}`)
+      router.push(`/?idList=${idList}`)
     },
     [router, updateTodo, idList]
   )
@@ -42,7 +43,7 @@ const TaskEditPage = (props) => {
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
         <h1>Edit task</h1>
-        <Link href={`/lists/list?idList=${idList}`} className="ml-auto">
+        <Link href={`/?idList=${idList}`} className="ml-auto">
           <XMarkIcon className="w-7"></XMarkIcon>
         </Link>
       </header>
@@ -50,7 +51,7 @@ const TaskEditPage = (props) => {
       <TaskForm
         buttonName="Save"
         onSubmit={handleSubmit}
-        initialValues={todoList[id].task.find((task) => task.id === taskId)}
+        initialValues={task}
       />
     </>
   )

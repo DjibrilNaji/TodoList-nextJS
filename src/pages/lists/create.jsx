@@ -13,7 +13,7 @@ const CreateTaskListPage = () => {
   const handleSubmit = useCallback(
     (values) => {
       addTodoList(values)
-      router.push(`/lists/list?idList=1`)
+      router.push(`/?idList=1`)
     },
     [router, addTodoList]
   )
@@ -26,7 +26,7 @@ const CreateTaskListPage = () => {
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
         <h1>Create a new list</h1>
-        <Link href={`/lists/list?idList=1`} className="ml-auto">
+        <Link href={`/?idList=1`} className="ml-auto">
           <XMarkIcon className="w-7"></XMarkIcon>
         </Link>
       </header>
