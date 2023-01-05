@@ -13,7 +13,7 @@ const CreateTaskListPage = () => {
   const handleSubmit = useCallback(
     (values) => {
       addTodoList(values)
-      router.push(`/?idList=1`)
+      router.push(`/`)
     },
     [router, addTodoList]
   )

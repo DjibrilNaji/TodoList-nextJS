@@ -18,6 +18,7 @@ const NavBar = () => {
   const { todoList, deleteTodoList } = useContext()
 
   const id = Number.parseInt(idList, 10)
+  const todoListSelected = todoList.find((item) => item.id === id)
 
   function countCheckedTasks(tasks) {
     return tasks.reduce((total, task) => total + (task.checked ? 1 : 0), 0)
@@ -34,7 +35,7 @@ const NavBar = () => {
         10
       )
       deleteTodoList(listId)
-      router.push("/?idList=1")
+      router.push("/")
     },
     [deleteTodoList, router]
   )
@@ -48,7 +49,11 @@ const NavBar = () => {
               <ul className="flex gap pt-1">
                 <Link
                   href={`/?idList=${taskList.id}`}
-                  className="p-2 border-t border-r rounded-t-lg font-bold cursor-pointer"
+                  className={`${
+                    taskList.id === id
+                      ? "p-2 border-t border-r rounded-t-lg font-bold cursor-pointer bg-slate-300"
+                      : "p-2 border-t border-r rounded-t-lg font-bold cursor-pointer"
+                  }`}
                 >
                   <span className="p-2">
                     {taskList.id} / {taskList.name}
@@ -90,18 +95,37 @@ const NavBar = () => {
             </div>
           ))}
 
-          <div className="flex gap pt-1">
-            <Link
-              href={"/lists/create"}
-              className="p-2 border-t border-r border-l rounded-t-lg ml-3"
-            >
-              <PlusIcon className="w-6" />
-            </Link>
-          </div>
+          {todoList.length > 0 ? (
+            <div className="flex gap pt-1">
+              <Link
+                href={"/lists/create"}
+                className="p-2 border-t border-r border-l rounded-t-lg ml-3"
+              >
+                <PlusIcon className="w-6" />
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col">
+                <div className="flex gap pt-1">
+                  <Link
+                    href={"/lists/create"}
+                    className="p-2 border-t border-r border-l rounded-t-lg ml-3"
+                  >
+                    <PlusIcon className="w-8" />
+                  </Link>
+                </div>
+                <span className="flex p-4 text-2xl font-bold">
+                  <ChevronDoubleUpIcon className="w-8" />
+                  Add new list !
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {todoList.length > 0 ? (
+      {todoListSelected ? (
         <div className="flex border-2">
           <Link
             href={`/tasks/create?idList=${id}`}
@@ -125,12 +149,7 @@ const NavBar = () => {
             </Button>
           </div>
         </div>
-      ) : (
-        <span className="flex p-4 text-2xl font-bold">
-          <ChevronDoubleUpIcon className="w-7" />
-          Add new todolist here !
-        </span>
-      )}
+      ) : null}
     </>
   )
 }
