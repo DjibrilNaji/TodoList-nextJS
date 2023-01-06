@@ -1,12 +1,12 @@
 import Button from "@/components/Button"
 import { useContext } from "@/components/ContextProvider"
+import Text from "@/components/Text"
 import {
+  CheckCircleIcon,
   CheckIcon,
-  ChevronDoubleUpIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
-  CheckCircleIcon,
 } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -15,19 +15,24 @@ import { useCallback } from "react"
 const NavBar = () => {
   const router = useRouter()
   const { idList } = router.query
-  const { todoList, deleteTodoList } = useContext()
+  const { todoList, deleteTodoList, handleShowCompletedClick, showCompleted } =
+    useContext()
+
+  console.log(showCompleted)
 
   const id = Number.parseInt(idList, 10)
   const todoListSelected = todoList.find((item) => item.id === id)
 
-  function countCheckedTasks(tasks) {
-    return tasks.reduce((total, task) => total + (task.checked ? 1 : 0), 0)
+  let completedTasksLenght
+  let completedTasks
+
+  if (todoListSelected && todoListSelected.task) {
+    completedTasks = todoListSelected.task.filter(
+      (task) => task.checked === true
+    )
+    completedTasksLenght = completedTasks.length
   }
 
-  const checkedTasks = todoList.reduce(
-    (total, taskList) => total + countCheckedTasks(taskList.task),
-    0
-  )
   const handleClickDeleteList = useCallback(
     (e) => {
       const listId = Number.parseInt(
@@ -39,6 +44,11 @@ const NavBar = () => {
     },
     [deleteTodoList, router]
   )
+
+  const handleCheckboxChange = useCallback(() => {
+    handleShowCompletedClick()
+    console.log(showCompleted)
+  }, [handleShowCompletedClick, showCompleted])
 
   return (
     <>
@@ -55,18 +65,20 @@ const NavBar = () => {
                       : "p-2 border-t border-r rounded-t-lg font-bold cursor-pointer"
                   }`}
                 >
-                  <span className="p-2">
-                    {taskList.id} / {taskList.name}
-                  </span>
+                  <span className="p-2">{taskList.name}</span>
                   {taskList.task.length === 0 ? (
                     <span className="p-2 pt-0 pb-0 bg-blue-400 text-sm rounded-lg">
                       {taskList.task.length}
                     </span>
                   ) : (
                     <>
-                      <span className="pr-2 pl-2 pt-0 pb-0 bg-green-400 text-sm rounded-lg">
-                        {checkedTasks}
-                      </span>
+                      {taskList.id === id ? (
+                        <>
+                          <span className="pr-2 pl-2 pt-0 pb-0 bg-green-400 text-sm rounded-lg">
+                            {completedTasksLenght}
+                          </span>
+                        </>
+                      ) : null}
                       <span className="p-2 pt-0 pb-0 bg-blue-400 text-sm rounded-lg">
                         {taskList.task.length}
                       </span>
@@ -87,7 +99,9 @@ const NavBar = () => {
                         : ""
                     }`}
                     style={{
-                      width: `${(checkedTasks / taskList.task.length) * 100}%`,
+                      width: `${
+                        (completedTasksLenght / taskList.task.length) * 100
+                      }%`,
                     }}
                   ></div>
                 </div>
@@ -96,13 +110,15 @@ const NavBar = () => {
           ))}
 
           {todoList.length > 0 ? (
-            <div className="flex gap pt-1">
-              <Link
-                href={"/lists/create"}
-                className="p-2 border-t border-r border-l rounded-t-lg ml-3"
-              >
-                <PlusIcon className="w-6" />
-              </Link>
+            <div className="flex flex-col">
+              <div className="flex gap pt-1">
+                <Link
+                  href={"/lists/create"}
+                  className="p-2 border-t border-r border-l rounded-t-lg ml-3"
+                >
+                  <PlusIcon className="w-6" />
+                </Link>
+              </div>
             </div>
           ) : (
             <>
@@ -115,10 +131,9 @@ const NavBar = () => {
                     <PlusIcon className="w-8" />
                   </Link>
                 </div>
-                <span className="flex p-4 text-2xl font-bold">
-                  <ChevronDoubleUpIcon className="w-8" />
-                  Add new list !
-                </span>
+                <>
+                  <Text title="Add new list !" />
+                </>
               </div>
             </>
           )}
@@ -126,29 +141,26 @@ const NavBar = () => {
       </div>
 
       {todoListSelected ? (
-        <div className="flex border-2">
-          <Link
-            href={`/tasks/create?idList=${id}`}
-            className="px-2 py-1 text-sm"
-          >
-            <PlusIcon className="w-6" />
-          </Link>
-          <Link href={`/lists/${id}/edit`} className="px-2 py-1 text-sm">
-            <PencilSquareIcon className="w-6" />
-          </Link>
-          <Button data-task-list-id={idList} onClick={handleClickDeleteList}>
-            <TrashIcon className="w-6" />
-          </Button>
-
-          <div className="ml-auto">
-            <Button>
-              <CheckCircleIcon className="w-6" />
+        <>
+          <div className="flex border-2">
+            <Link
+              href={`/tasks/create?idList=${id}`}
+              className="px-2 py-1 text-sm"
+            >
+              <PlusIcon className="w-6" />
+            </Link>
+            <Link href={`/lists/${id}/edit`} className="px-2 py-1 text-sm">
+              <PencilSquareIcon className="w-6" />
+            </Link>
+            <Button data-task-list-id={idList} onClick={handleClickDeleteList}>
+              <TrashIcon className="w-6" />
             </Button>
-            <Button>
-              <CheckIcon className="w-6" />
+
+            <Button onClick={handleCheckboxChange} className="w-10">
+              {!showCompleted ? <CheckCircleIcon /> : <CheckIcon />}
             </Button>
           </div>
-        </div>
+        </>
       ) : null}
     </>
   )

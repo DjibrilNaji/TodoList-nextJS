@@ -1,9 +1,14 @@
 import Button from "@/components/Button"
 import { useContext } from "@/components/ContextProvider"
-import { TrashIcon } from "@heroicons/react/24/solid"
+import Text from "@/components/Text"
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  TrashIcon,
+} from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 
 const TodoList = () => {
   const router = useRouter()
@@ -37,42 +42,99 @@ const TodoList = () => {
     [handleCheckboxChange]
   )
 
+  let filteredTasks
+
+  if (todoListSelected && todoListSelected.task) {
+    filteredTasks = todoListSelected.task.filter(
+      (task) => task.checked === false
+    )
+  }
+
+  const [toggle, setToggle] = useState(false)
+
+  const handleShowCompletedClick = () => {
+    setToggle(!toggle)
+  }
+
   return (
     <>
+      <Button onClick={handleShowCompletedClick} className="w-12">
+        {!toggle ? <CheckCircleIcon /> : <CheckIcon />}
+      </Button>
+
       {todoListSelected ? (
         <>
           {todoListSelected.task.length > 0 ? (
             <>
-              {todoListSelected.task.map((taskItem) => (
-                <p key={taskItem.id} className="flex pl-4 border-b-2">
-                  <input
-                    readOnly
-                    type="checkbox"
-                    data-task-id={taskItem.id}
-                    checked={taskItem.checked}
-                    onClick={handleClickCheckboxChange}
-                    className="w-5 accent-green-400 cursor-pointer"
-                  />
-                  <Link
-                    href={`/tasks/${taskItem.id}/edit?idList=${id}`}
-                    className="p-2"
-                  >
-                    {taskItem.id} / {taskItem.description}
-                  </Link>
-                  <Button
-                    data-task-id={taskItem.id}
-                    onClick={handleClickDelete}
-                    className="ml-auto"
-                  >
-                    <TrashIcon className="w-5 " />
-                  </Button>
-                </p>
-              ))}
+              {!toggle ? (
+                <>
+                  {todoListSelected.task.map((taskItem) => (
+                    <div
+                      key={taskItem.id}
+                      data-task-id={taskItem.id}
+                      className="flex pl-2 pb-2 pt-2 border-b-2"
+                    >
+                      <input
+                        readOnly
+                        type="checkbox"
+                        data-task-id={taskItem.id}
+                        checked={taskItem.checked}
+                        onClick={handleClickCheckboxChange}
+                        className="p-4 border-2 appearance-none checked:bg-green-400"
+                      />
+
+                      <Link
+                        href={`/tasks/${taskItem.id}/edit?idList=${id}`}
+                        className="p-2"
+                      >
+                        {taskItem.description}
+                      </Link>
+                      <Button
+                        data-task-id={taskItem.id}
+                        onClick={handleClickDelete}
+                        className="ml-auto"
+                      >
+                        <TrashIcon className="w-6" />
+                      </Button>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {filteredTasks.map((taskItem) => (
+                    <div
+                      key={taskItem.id}
+                      className="flex pl-2 pb-2 pt-2 border-b-2"
+                    >
+                      <input
+                        readOnly
+                        type="checkbox"
+                        data-task-id={taskItem.id}
+                        checked={taskItem.checked}
+                        onClick={handleClickCheckboxChange}
+                        className="p-4 border-2 appearance-none checked:bg-green-400"
+                      />
+
+                      <Link
+                        href={`/tasks/${taskItem.id}/edit?idList=${id}`}
+                        className="p-2"
+                      >
+                        {taskItem.description}
+                      </Link>
+                      <Button
+                        data-task-id={taskItem.id}
+                        onClick={handleClickDelete}
+                        className="ml-auto"
+                      >
+                        <TrashIcon className="w-5" />
+                      </Button>
+                    </div>
+                  ))}
+                </>
+              )}
             </>
           ) : (
-            <span className="flex text-2xl font-bold">
-              Add new task or new list !
-            </span>
+            <Text title="Add new task or new list !" />
           )}
         </>
       ) : null}

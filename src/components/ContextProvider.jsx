@@ -10,7 +10,7 @@ const initialTodoList = [
   {
     id: 1,
     name: "Homeworks",
-    task: [{ id: 1, description: "Initial Task" }],
+    task: [{ id: 1, description: "Initial Task", checked: false }],
   },
 ]
 
@@ -22,6 +22,7 @@ const ContextProvider = (props) => {
   const [nextTodoId, setNextTodoId] = useState(2)
   const [nextListTodoId, setNextListTodoId] = useState(2)
   const [todoList, setTodoList] = useState(initialTodoList)
+  const [showCompleted, setShowCompleted] = useState(false)
 
   const router = useRouter()
   const { idList } = router.query
@@ -39,6 +40,50 @@ const ContextProvider = (props) => {
     return nextListTodoId
   }, [nextListTodoId])
 
+  const handleCheckboxChange = useCallback(
+    (id) => {
+      setTodoList((prevTasks) =>
+        prevTasks.map((task) => {
+          return {
+            ...task,
+            task: task.task.map((task) => {
+              if (task.id === id) {
+                return { ...task, checked: !task.checked }
+              }
+
+              return task
+            }),
+          }
+        })
+      )
+    },
+    [setTodoList]
+  )
+
+  const handleShowCompletedClick = useCallback(() => {
+    setShowCompleted(!showCompleted)
+  }, [showCompleted])
+
+  const handleCheckboxFilterChange = useCallback(
+    (id) => {
+      setTodoList((prevTasks) =>
+        prevTasks.map((task) => {
+          return {
+            ...task,
+            task: task.task.map((task) => {
+              if (task.id === id) {
+                return { ...task, checked: !task.checked }
+              }
+
+              return task
+            }),
+          }
+        })
+      )
+    },
+    [setTodoList]
+  )
+
   const addTodo = useCallback(
     (task) => {
       setTodoList((todoList) =>
@@ -46,7 +91,10 @@ const ContextProvider = (props) => {
           taskList.id === id
             ? {
                 ...taskList,
-                task: [...taskList.task, { id: getNextTodoId(), ...task }],
+                task: [
+                  ...taskList.task,
+                  { id: getNextTodoId(), ...task, checked: false },
+                ],
               }
             : taskList
         )
@@ -116,6 +164,9 @@ const ContextProvider = (props) => {
       value={{
         todoList,
         addTodo,
+        handleCheckboxChange,
+        handleShowCompletedClick,
+        handleCheckboxFilterChange,
         deleteTodo,
         updateTodo,
         addTodoList,

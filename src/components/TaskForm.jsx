@@ -32,7 +32,7 @@ const TaskForm = (props) => {
       <Form className="flex flex-col gap-4 p-4">
         <FormField name="description" type="text" label="Description" />
         <div className="ml-auto">
-          <Link href={"/?idList=1"} className="font-bold">
+          <Link href={"/"} className="font-bold">
             Cancel
           </Link>
           <Button type="submit" variant="secondary" size="md" className="ml-3">
