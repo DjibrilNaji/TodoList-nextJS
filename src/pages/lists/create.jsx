@@ -8,14 +8,14 @@ import { useCallback } from "react"
 
 const CreateTaskListPage = () => {
   const router = useRouter()
-  const { addTodoList } = useContext()
+  const { createTodoList } = useContext()
 
   const handleSubmit = useCallback(
     (values) => {
-      addTodoList(values)
+      createTodoList(values)
       router.push(`/`)
     },
-    [router, addTodoList]
+    [router, createTodoList]
   )
 
   return (
@@ -26,7 +26,7 @@ const CreateTaskListPage = () => {
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
         <h1>Create a new list</h1>
-        <Link href={`/?idList=1`} className="ml-auto">
+        <Link href={`/`} className="ml-auto">
           <XMarkIcon className="w-7"></XMarkIcon>
         </Link>
       </header>

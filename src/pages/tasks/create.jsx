@@ -9,17 +9,17 @@ import { XMarkIcon } from "@heroicons/react/24/solid"
 const CreateTaskPage = () => {
   const router = useRouter()
 
-  const { addTodo } = useContext()
+  const { createTodo } = useContext()
   const { idList } = router.query
 
   const id = Number.parseInt(idList, 10)
 
   const handleSubmit = useCallback(
     (values) => {
-      addTodo(values)
+      createTodo(values)
       router.push(`/?idList=${id}`)
     },
-    [router, addTodo, id]
+    [router, createTodo, id]
   )
 
   return (
