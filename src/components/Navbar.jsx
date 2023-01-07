@@ -1,9 +1,9 @@
 import Button from "@/components/Button"
-import { useContext } from "@/components/ContextProvider"
 import Text from "@/components/Text"
 import {
   CheckCircleIcon,
   CheckIcon,
+  ChevronDoubleUpIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
@@ -11,23 +11,23 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useCallback } from "react"
+import { useContext } from "@/components/ContextProvider"
 
 const NavBar = () => {
   const router = useRouter()
-  const { idList } = router.query
-  const { todoList, deleteTodoList, handleShowCompletedClick, showCompleted } =
-    useContext()
+  const { listId } = router.query
+  const { todoList, deleteTodoList, filterTask, toggle } = useContext()
 
-  console.log(showCompleted)
-
-  const id = Number.parseInt(idList, 10)
-  const todoListSelected = todoList.find((item) => item.id === id)
+  const selectedTodoListId = Number.parseInt(listId, 10)
+  const selectedTodoList = todoList.find(
+    (item) => item.id === selectedTodoListId
+  )
 
   let completedTasksLenght
   let completedTasks
 
-  if (todoListSelected && todoListSelected.task) {
-    completedTasks = todoListSelected.task.filter(
+  if (selectedTodoList && selectedTodoList.task) {
+    completedTasks = selectedTodoList.task.filter(
       (task) => task.checked === true
     )
     completedTasksLenght = completedTasks.length
@@ -45,25 +45,30 @@ const NavBar = () => {
     [deleteTodoList, router]
   )
 
-  const handleCheckboxChange = useCallback(() => {
-    handleShowCompletedClick()
-    console.log(showCompleted)
-  }, [handleShowCompletedClick, showCompleted])
+  const handleClickScroll = useCallback((e) => {
+    const element = e.currentTarget
+    element.scrollIntoView()
+  }, [])
+
+  const handleClickFilterTask = useCallback(() => {
+    filterTask()
+  }, [filterTask])
 
   return (
     <>
-      <div className="sticky top-0 bg-white">
+      <div className="sticky top-0 overflow-x-auto bg-white">
         <div className="flex">
           {todoList.map((taskList) => (
             <div key={taskList.id}>
               <ul className="flex gap pt-1">
                 <Link
-                  href={`/?idList=${taskList.id}`}
+                  href={`/?listId=${taskList.id}`}
                   className={`${
-                    taskList.id === id
+                    taskList.id === selectedTodoListId
                       ? "p-2 border-t border-r rounded-t-lg font-bold cursor-pointer bg-slate-300"
                       : "p-2 border-t border-r rounded-t-lg font-bold cursor-pointer"
                   }`}
+                  onClick={(e) => handleClickScroll(e)}
                 >
                   <span className="p-2">{taskList.name}</span>
                   {taskList.task.length === 0 ? (
@@ -72,14 +77,14 @@ const NavBar = () => {
                     </span>
                   ) : (
                     <>
-                      {taskList.id === id ? (
+                      {taskList.id === selectedTodoListId ? (
                         <>
-                          <span className="pr-2 pl-2 pt-0 pb-0 bg-green-400 text-sm rounded-lg">
+                          <span className="pr-1.5 pl-1.5 pt-0 pb-0 bg-green-400 text-sm rounded-l-lg rounded-b-lg">
                             {completedTasksLenght}
                           </span>
                         </>
                       ) : null}
-                      <span className="p-2 pt-0 pb-0 bg-blue-400 text-sm rounded-lg">
+                      <span className="p-1.5 pt-0 pb-0 bg-blue-400 text-sm rounded-r-lg rounded-b-lg">
                         {taskList.task.length}
                       </span>
                     </>
@@ -94,7 +99,7 @@ const NavBar = () => {
                 <div className="bg-slate-300 rounded-2xl">
                   <div
                     className={`${
-                      taskList.id === id
+                      taskList.id === selectedTodoListId
                         ? "bg-green-400 pt-1 rounded-2xl duration-500 ease-linear"
                         : ""
                     }`}
@@ -131,37 +136,41 @@ const NavBar = () => {
                     <PlusIcon className="w-8" />
                   </Link>
                 </div>
-                <>
-                  <Text title="Add new list !" />
-                </>
               </div>
             </>
           )}
         </div>
       </div>
 
-      {todoListSelected ? (
+      {selectedTodoList ? (
         <>
-          <div className="flex border-2">
+          <div className="flex sticky top-12 border-2 bg-white">
             <Link
-              href={`/tasks/create?idList=${id}`}
+              href={`/tasks/create?listId=${selectedTodoListId}`}
               className="px-2 py-1 text-sm"
             >
               <PlusIcon className="w-6" />
             </Link>
-            <Link href={`/lists/${id}/edit`} className="px-2 py-1 text-sm">
+            <Link
+              href={`/lists/${selectedTodoListId}/edit`}
+              className="px-2 py-1 text-sm"
+            >
               <PencilSquareIcon className="w-6" />
             </Link>
-            <Button data-task-list-id={idList} onClick={handleClickDeleteList}>
+            <Button data-task-list-id={listId} onClick={handleClickDeleteList}>
               <TrashIcon className="w-6" />
             </Button>
-
-            <Button onClick={handleCheckboxChange} className="w-10">
-              {!showCompleted ? <CheckCircleIcon /> : <CheckIcon />}
+            <Button onClick={handleClickFilterTask} className="w-10 ml-auto">
+              {!toggle ? <CheckCircleIcon /> : <CheckIcon />}
             </Button>
           </div>
         </>
-      ) : null}
+      ) : (
+        <div className="flex p-4">
+          <ChevronDoubleUpIcon className="w-9" />
+          <Text title="Select a list or create one !" />
+        </div>
+      )}
     </>
   )
 }

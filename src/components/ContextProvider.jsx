@@ -15,18 +15,17 @@ const initialTodoList = [
 ]
 
 export const Context = createContext()
-
 export const useContext = () => useNativeContext(Context)
 
 const ContextProvider = (props) => {
   const [nextTodoId, setNextTodoId] = useState(2)
   const [nextListTodoId, setNextListTodoId] = useState(2)
   const [todoList, setTodoList] = useState(initialTodoList)
-  const [showCompleted, setShowCompleted] = useState(false)
+  const [toggle, setToggle] = useState(false)
 
   const router = useRouter()
-  const { idList } = router.query
-  const id = Number.parseInt(idList, 10)
+  const { listId } = router.query
+  const id = Number.parseInt(listId, 10)
 
   const getNextTodoId = useCallback(() => {
     setNextTodoId(nextTodoId + 1)
@@ -34,16 +33,10 @@ const ContextProvider = (props) => {
     return nextTodoId
   }, [nextTodoId])
 
-  const getNextTodoListId = useCallback(() => {
-    setNextListTodoId(nextListTodoId + 1)
-
-    return nextListTodoId
-  }, [nextListTodoId])
-
-  const handleCheckboxChange = useCallback(
+  const completeTask = useCallback(
     (id) => {
-      setTodoList((prevTasks) =>
-        prevTasks.map((task) => {
+      setTodoList((todoList) =>
+        todoList.map((task) => {
           return {
             ...task,
             task: task.task.map((task) => {
@@ -60,31 +53,11 @@ const ContextProvider = (props) => {
     [setTodoList]
   )
 
-  const handleShowCompletedClick = useCallback(() => {
-    setShowCompleted(!showCompleted)
-  }, [showCompleted])
+  const filterTask = useCallback(() => {
+    setToggle(!toggle)
+  }, [toggle])
 
-  const handleCheckboxFilterChange = useCallback(
-    (id) => {
-      setTodoList((prevTasks) =>
-        prevTasks.map((task) => {
-          return {
-            ...task,
-            task: task.task.map((task) => {
-              if (task.id === id) {
-                return { ...task, checked: !task.checked }
-              }
-
-              return task
-            }),
-          }
-        })
-      )
-    },
-    [setTodoList]
-  )
-
-  const addTodo = useCallback(
+  const createTodo = useCallback(
     (task) => {
       setTodoList((todoList) =>
         todoList.map((taskList) =>
@@ -136,14 +109,15 @@ const ContextProvider = (props) => {
     [id]
   )
 
-  const addTodoList = useCallback(
-    (item) => {
+  const createTodoList = useCallback(
+    (newListId, item) => {
       setTodoList((taskList) => [
         ...taskList,
-        { id: getNextTodoListId(), name: item.description, task: [] },
+        { id: newListId, name: item.name, task: [] },
       ])
+      setNextListTodoId(nextListTodoId + 1)
     },
-    [getNextTodoListId]
+    [nextListTodoId]
   )
 
   const updateTodoList = useCallback((updateTodoList) => {
@@ -163,13 +137,14 @@ const ContextProvider = (props) => {
       {...props}
       value={{
         todoList,
-        addTodo,
-        handleCheckboxChange,
-        handleShowCompletedClick,
-        handleCheckboxFilterChange,
+        toggle,
+        nextListTodoId,
+        createTodo,
+        completeTask,
+        filterTask,
         deleteTodo,
         updateTodo,
-        addTodoList,
+        createTodoList,
         updateTodoList,
         deleteTodoList,
       }}
