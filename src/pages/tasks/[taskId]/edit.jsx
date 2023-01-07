@@ -21,7 +21,7 @@ const TaskEditPage = (props) => {
 
   const router = useRouter()
   const { updateTodo, todoList } = useContext()
-  const { idList } = router.query
+  const { listId } = router.query
 
   const task = todoList
     .flatMap((obj) => obj.task)
@@ -30,9 +30,9 @@ const TaskEditPage = (props) => {
   const handleSubmit = useCallback(
     (values) => {
       updateTodo(values)
-      router.push(`/?idList=${idList}`)
+      router.push(`/?listId=${listId}`)
     },
-    [router, updateTodo, idList]
+    [router, updateTodo, listId]
   )
 
   return (
@@ -43,7 +43,7 @@ const TaskEditPage = (props) => {
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
         <h1>Edit task</h1>
-        <Link href={`/?idList=${idList}`} className="ml-auto">
+        <Link href={`/?listId=${listId}`} className="ml-auto">
           <XMarkIcon className="w-7"></XMarkIcon>
         </Link>
       </header>

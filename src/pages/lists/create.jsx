@@ -1,5 +1,5 @@
 import { useContext } from "@/components/ContextProvider"
-import TaskForm from "@/components/TaskForm"
+import TaskListForm from "@/components/TaskListForm"
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import Head from "next/head"
 import Link from "next/link"
@@ -8,14 +8,15 @@ import { useCallback } from "react"
 
 const CreateTaskListPage = () => {
   const router = useRouter()
-  const { createTodoList } = useContext()
+  const { createTodoList, nextListTodoId } = useContext()
+  const listId = Number.parseInt(nextListTodoId, 10)
 
   const handleSubmit = useCallback(
     (values) => {
-      createTodoList(values)
-      router.push(`/`)
+      createTodoList(listId, values)
+      router.push(`/?listId=${listId}`)
     },
-    [router, createTodoList]
+    [router, createTodoList, listId]
   )
 
   return (
@@ -31,7 +32,7 @@ const CreateTaskListPage = () => {
         </Link>
       </header>
 
-      <TaskForm onSubmit={handleSubmit} buttonName="Create" />
+      <TaskListForm onSubmit={handleSubmit} buttonName="Create" />
     </>
   )
 }

@@ -27,7 +27,7 @@ const ListEditPage = (props) => {
   const handleSubmit = useCallback(
     (values) => {
       updateTodoList(values)
-      router.push(`/?idList=${listId}`)
+      router.push(`/?listId=${listId}`)
     },
     [router, updateTodoList, listId]
   )
@@ -40,7 +40,7 @@ const ListEditPage = (props) => {
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
         <h1>Edit list</h1>
-        <Link href={`/?idList=${listId}`} className="ml-auto">
+        <Link href={`/?listId=${listId}`} className="ml-auto">
           <XMarkIcon className="w-7"></XMarkIcon>
         </Link>
       </header>

@@ -10,14 +10,14 @@ const CreateTaskPage = () => {
   const router = useRouter()
 
   const { createTodo } = useContext()
-  const { idList } = router.query
+  const { listId } = router.query
 
-  const id = Number.parseInt(idList, 10)
+  const id = Number.parseInt(listId, 10)
 
   const handleSubmit = useCallback(
     (values) => {
       createTodo(values)
-      router.push(`/?idList=${id}`)
+      router.push(`/?listId=${id}`)
     },
     [router, createTodo, id]
   )
@@ -30,7 +30,7 @@ const CreateTaskPage = () => {
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
         <h1>Create a new task</h1>
-        <Link href={`/?idList=${id}`} className="ml-auto">
+        <Link href={`/?listId=${id}`} className="ml-auto">
           <XMarkIcon className="w-7"></XMarkIcon>
         </Link>
       </header>
