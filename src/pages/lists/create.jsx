@@ -22,7 +22,7 @@ const CreateTaskListPage = () => {
   return (
     <>
       <Head>
-        <title>Create todo list</title>
+        <title>Create list</title>
       </Head>
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
