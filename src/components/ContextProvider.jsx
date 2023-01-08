@@ -33,7 +33,7 @@ const ContextProvider = (props) => {
     return nextTodoId
   }, [nextTodoId])
 
-  const completeTask = useCallback(
+  const toggleCheckedTask = useCallback(
     (id) => {
       setTodoList((todoList) =>
         todoList.map((task) => {
@@ -140,7 +140,7 @@ const ContextProvider = (props) => {
         toggle,
         nextListTodoId,
         createTodo,
-        completeTask,
+        toggleCheckedTask,
         filterTask,
         deleteTodo,
         updateTodo,

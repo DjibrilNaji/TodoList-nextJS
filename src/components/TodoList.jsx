@@ -9,7 +9,7 @@ import { useCallback } from "react"
 const TodoList = () => {
   const router = useRouter()
   const { listId } = router.query
-  const { todoList, deleteTodo, completeTask, toggle } = useContext()
+  const { todoList, deleteTodo, toggleCheckedTask, toggle } = useContext()
 
   const todoListSelectedId = Number.parseInt(listId, 10)
   const todoListSelected = todoList.find(
@@ -35,9 +35,9 @@ const TodoList = () => {
         10
       )
 
-      completeTask(taskId)
+      toggleCheckedTask(taskId)
     },
-    [completeTask]
+    [toggleCheckedTask]
   )
 
   let filteredTasks
