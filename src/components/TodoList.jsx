@@ -2,6 +2,7 @@ import Button from "@/components/Button"
 import { useContext } from "@/components/ContextProvider"
 import Text from "@/components/Text"
 import { ChevronDoubleUpIcon, TrashIcon } from "@heroicons/react/24/solid"
+import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useCallback } from "react"
@@ -50,6 +51,12 @@ const TodoList = () => {
 
   return (
     <>
+      <Head>
+        <title>
+          Liste {listId} : {todoListSelected.name}
+        </title>
+      </Head>
+
       {todoListSelected ? (
         <>
           {todoListSelected.task.length > 0 ? (
