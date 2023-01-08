@@ -25,7 +25,7 @@ const ContextProvider = (props) => {
 
   const router = useRouter()
   const { listId } = router.query
-  const id = Number.parseInt(listId, 10)
+  const selectedTodoListId = Number.parseInt(listId, 10)
 
   const getNextTodoId = useCallback(() => {
     setNextTodoId(nextTodoId + 1)
@@ -61,7 +61,7 @@ const ContextProvider = (props) => {
     (task) => {
       setTodoList((todoList) =>
         todoList.map((taskList) =>
-          taskList.id === id
+          taskList.id === selectedTodoListId
             ? {
                 ...taskList,
                 task: [
@@ -73,7 +73,7 @@ const ContextProvider = (props) => {
         )
       )
     },
-    [getNextTodoId, id]
+    [getNextTodoId, selectedTodoListId]
   )
 
   const updateTodo = useCallback((updateTodo) => {
@@ -97,7 +97,7 @@ const ContextProvider = (props) => {
     (taskId) => {
       setTodoList((todoList) =>
         todoList.map((taskList) =>
-          taskList.id === id
+          taskList.id === selectedTodoListId
             ? {
                 ...taskList,
                 task: taskList.task.filter(({ id }) => id != taskId),
@@ -106,7 +106,7 @@ const ContextProvider = (props) => {
         )
       )
     },
-    [id]
+    [selectedTodoListId]
   )
 
   const createTodoList = useCallback(
