@@ -1,9 +1,7 @@
 import Button from "@/components/Button"
-import Text from "@/components/Text"
 import {
   CheckCircleIcon,
   CheckIcon,
-  ChevronDoubleUpIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
@@ -56,7 +54,7 @@ const NavBar = () => {
 
   return (
     <>
-      <div className="sticky top-0 overflow-x-auto bg-white">
+      <div className="sticky top-0 left-0 overflow-x-auto bg-white">
         <div className="flex">
           {todoList.map((taskList) => (
             <div key={taskList.id}>
@@ -71,36 +69,31 @@ const NavBar = () => {
                   onClick={(e) => handleClickScroll(e)}
                 >
                   <span className="p-2">{taskList.name}</span>
-                  {taskList.task.length === 0 ? (
-                    <span className="p-2 pt-0 pb-0 bg-blue-400 text-sm rounded-lg">
+                  {completedTasksLenght === 0 ? (
+                    <span className="pl-2 pr-2 bg-blue-400 text-sm rounded-lg">
                       {taskList.task.length}
                     </span>
                   ) : (
                     <>
                       {taskList.id === selectedTodoListId ? (
-                        <>
-                          <span className="pr-1.5 pl-1.5 pt-0 pb-0 bg-green-400 text-sm rounded-l-lg rounded-b-lg">
-                            {completedTasksLenght}
-                          </span>
-                        </>
+                        <span className="pl-2 pr-2 bg-green-400 text-sm rounded-lg z-40 relative">
+                          {completedTasksLenght}
+                        </span>
                       ) : null}
-                      <span className="p-1.5 pt-0 pb-0 bg-blue-400 text-sm rounded-r-lg rounded-b-lg">
+                      <span className="pl-2 pr-2 bg-blue-400 text-sm rounded-lg z-10 relative">
                         {taskList.task.length}
                       </span>
                     </>
                   )}
                 </Link>
               </ul>
-              {taskList.task.length === 0 ? (
-                <div className="bg-slate-300">
-                  <div className="opacity-0"></div>
-                </div>
-              ) : (
+
+              {taskList.task.length === 0 ? null : (
                 <div className="bg-slate-300 rounded-2xl">
                   <div
                     className={`${
                       taskList.id === selectedTodoListId
-                        ? "bg-green-400 pt-1 rounded-2xl duration-500 ease-linear"
+                        ? "bg-green-400 pt-1 rounded-2xl duration-300 ease-linear"
                         : ""
                     }`}
                     style={{
@@ -126,51 +119,42 @@ const NavBar = () => {
               </div>
             </div>
           ) : (
-            <>
-              <div className="flex flex-col">
-                <div className="flex gap pt-1">
-                  <Link
-                    href={"/lists/create"}
-                    className="p-2 border-t border-r border-l rounded-t-lg ml-3"
-                  >
-                    <PlusIcon className="w-8" />
-                  </Link>
-                </div>
+            <div className="flex flex-col">
+              <div className="flex gap pt-1">
+                <Link
+                  href={"/lists/create"}
+                  className="p-2 border-t border-r border-l rounded-t-lg ml-3"
+                >
+                  <PlusIcon className="w-8" />
+                </Link>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
 
       {selectedTodoList ? (
-        <>
-          <div className="flex sticky top-12 border-2 bg-white">
-            <Link
-              href={`/tasks/create?listId=${selectedTodoListId}`}
-              className="px-2 py-1 text-sm"
-            >
-              <PlusIcon className="w-6" />
-            </Link>
-            <Link
-              href={`/lists/${selectedTodoListId}/edit`}
-              className="px-2 py-1 text-sm"
-            >
-              <PencilSquareIcon className="w-6" />
-            </Link>
-            <Button data-task-list-id={listId} onClick={handleClickDeleteList}>
-              <TrashIcon className="w-6" />
-            </Button>
-            <Button onClick={handleClickFilterTask} className="w-10 ml-auto">
-              {!toggle ? <CheckCircleIcon /> : <CheckIcon />}
-            </Button>
-          </div>
-        </>
-      ) : (
-        <div className="flex p-4">
-          <ChevronDoubleUpIcon className="w-9" />
-          <Text title="Select a list or create one !" />
+        <div className="flex sticky top-12 border-2 bg-white">
+          <Link
+            href={`/tasks/create?listId=${selectedTodoListId}`}
+            className="px-2 py-1 text-sm"
+          >
+            <PlusIcon className="w-6" />
+          </Link>
+          <Link
+            href={`/lists/${selectedTodoListId}/edit`}
+            className="px-2 py-1 text-sm"
+          >
+            <PencilSquareIcon className="w-6" />
+          </Link>
+          <Button data-task-list-id={listId} onClick={handleClickDeleteList}>
+            <TrashIcon className="w-6" />
+          </Button>
+          <Button onClick={handleClickFilterTask} className="w-10 ml-auto">
+            {!toggle ? <CheckCircleIcon /> : <CheckIcon />}
+          </Button>
         </div>
-      )}
+      ) : null}
     </>
   )
 }

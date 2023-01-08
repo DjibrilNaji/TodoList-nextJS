@@ -35,7 +35,7 @@ const ListEditPage = (props) => {
   return (
     <>
       <Head>
-        <title>Edit todo list</title>
+        <title>Edit list {listId}</title>
       </Head>
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">

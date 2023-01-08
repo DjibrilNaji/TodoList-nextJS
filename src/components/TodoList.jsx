@@ -1,7 +1,7 @@
 import Button from "@/components/Button"
 import { useContext } from "@/components/ContextProvider"
 import Text from "@/components/Text"
-import { TrashIcon } from "@heroicons/react/24/solid"
+import { ChevronDoubleUpIcon, TrashIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useCallback } from "react"
@@ -125,7 +125,12 @@ const TodoList = () => {
             <Text title="Add new task or new list !" />
           )}
         </>
-      ) : null}
+      ) : (
+        <div className="flex p-4">
+          <ChevronDoubleUpIcon className="w-9" />
+          <Text title="Select a list or create one !" />
+        </div>
+      )}
     </>
   )
 }

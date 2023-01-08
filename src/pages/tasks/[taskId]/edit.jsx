@@ -38,7 +38,7 @@ const TaskEditPage = (props) => {
   return (
     <>
       <Head>
-        <title>Edit task</title>
+        <title>Edit task {taskId}</title>
       </Head>
 
       <header className="flex py-2 px-4 text-xl	font-bold border-b-2">
