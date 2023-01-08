@@ -53,7 +53,8 @@ const TodoList = () => {
     <>
       <Head>
         <title>
-          Liste {listId} : {todoListSelected.name}
+          Liste {listId}
+          {todoListSelected ? " : " + todoListSelected.name : null}
         </title>
       </Head>
 
